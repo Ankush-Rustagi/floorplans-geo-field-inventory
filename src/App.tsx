@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { PageHeader } from "@/components/page-header"
+import { DataSources } from "@/components/data-sources"
+import { PageFooter } from "@/components/page-footer"
 
 // ─── Shared data types and helpers ───────────────────────────────────────────
 
@@ -569,40 +571,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div
-        aria-hidden
-        className="fixed inset-x-0 top-0 h-64 -z-10 opacity-30 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 70% 60% at 30% 0%, oklch(0.6 0.16 195 / 0.7), transparent), radial-gradient(ellipse 60% 50% at 80% 0%, oklch(0.7 0.18 70 / 0.5), transparent)" }}
-      />
       <main className="mx-auto max-w-5xl px-4 md:px-6 py-10">
-        <a href="https://ankush-rustagi.github.io/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-          <ArrowLeft className="size-4" />Back to index
-        </a>
-
-        <header className="mb-6">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="rounded border border-teal-500/30 bg-teal-500/10 text-teal-300 text-[10px] px-2 py-0.5 font-medium">Canvas</span>
-            <span className="rounded border border-border bg-muted/50 text-muted-foreground text-[10px] px-2 py-0.5">Floorplans · Maps 2.0</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight leading-tight mb-2">
-            Floorplans Geo-Field Inventory<br />
-            <span className="text-muted-foreground">and vAtlas Transform</span>
-          </h1>
-          <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
-            Complete inventory of every geolocation field in vFootprint (Floorplans 1.0), field-by-field transform spec for vAtlas GeoJSON, and a full migration feasibility assessment.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-            {[
-              { label: "Geo Fields per Plan", value: "10" }, { label: "Geo Fields per Camera", value: "4" },
-              { label: "Prod Plans Anchored", value: "99.8%", green: true }, { label: "Cameras with GPS", value: "100%", green: true },
-            ].map(s => (
-              <div key={s.label} className={cn("rounded-xl border p-3", s.green ? "border-emerald-500/30 bg-emerald-500/10" : "border-border bg-card")}>
-                <div className={cn("text-xl font-bold", s.green ? "text-emerald-300" : "")}>{s.value}</div>
-                <div className="text-[11px] text-muted-foreground mt-0.5">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </header>
+        <PageHeader
+          type="Geo-Field Inventory · Canvas"
+          title={<>Floorplans Geo-Field Inventory<br /><span className="text-muted-foreground">and vAtlas Transform</span></>}
+          subtitle="Complete inventory of every geolocation field in vFootprint (Floorplans 1.0), field-by-field transform spec for vAtlas GeoJSON, and a full migration feasibility assessment."
+          createdDate="May 14, 2026"
+          modifiedDate="May 18, 2026"
+          stats={[
+            { value: "10", label: "geo fields / plan" },
+            { value: "4", label: "geo fields / camera" },
+            { value: "99.8%", label: "plans anchored" },
+            { value: "100%", label: "cameras with GPS" },
+          ]}
+          gradient="radial-gradient(ellipse 70% 60% at 30% 0%, oklch(0.6 0.16 195 / 0.7), transparent), radial-gradient(ellipse 60% 50% at 80% 0%, oklch(0.7 0.18 70 / 0.5), transparent)"
+        />
 
         <nav className="flex flex-wrap gap-2 mb-2">
           {TABS.map(t => (
@@ -623,9 +606,17 @@ export default function App() {
         {tab === "inventory" && <TabGeoInventory />}
         {tab === "migration" && <TabMigration />}
 
-        <footer className="mt-20 pt-6 border-t border-border text-xs text-muted-foreground">
-          Ankush Rustagi · Verkada Product · Last updated May 18, 2026. Data source: Hex thread 019e255c. Backend code: Verkada-Backend/vfloorplans/
-        </footer>
+        <DataSources
+          sources={[
+            { label: "vFootprint backend (Verkada-Backend)", description: "floor_plan_entities.py, common_entities.py, calibration_entities.py, position_coords_converter.py — field definitions extracted directly from source." },
+            { label: "Hex analytics thread (019e255c)", description: "Production floorplan sample data: 5 customer plans across 4 verticals. Used for field presence analysis and accuracy testing." },
+            { label: "vAtlas GeoJSON spec", description: "Target schema for Maps 2.0. Transform spec derived from comparing vFootprint fields to GeoJSON FeatureCollection requirements." },
+          ]}
+          methodology="Fields were inventoried by reading entity class definitions in the vfloorplans/ module. Sample plans were run through the transform functions in a test environment. Accuracy figures are from real production plans."
+          asOf="May 2026"
+        />
+
+        <PageFooter builtDate="2026-05-14" extra="Verkada-Backend/vfloorplans/" />
       </main>
     </div>
   )
